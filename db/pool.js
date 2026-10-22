@@ -1,12 +1,13 @@
 const { Pool } = require("pg");
 
-// All of the following properties should be read from environment variables
-// We're hardcoding them here for simplicity
-module.exports = new Pool({
-  host: "localhost", // or wherever the db is hosted
-  user: "harsha",
-  database: "top_users",
-  password: "qwe",
-  port: 5432 // The default port
-});
+const connectionConfig = process.env.DATABASE_URL
+  ? { connectionString: process.env.DATABASE_URL }
+  : {
+      host: process.env.PGHOST || "/var/run/postgresql",
+      user: process.env.PGUSER || "harsha",
+      database: process.env.PGDATABASE || "top_users",
+      password: process.env.PGPASSWORD,
+      port: process.env.PGPORT || 5432
+    };
 
+module.exports = new Pool(connectionConfig);

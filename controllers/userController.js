@@ -1,7 +1,8 @@
 const db = require("../db/queries");
 
 async function getUsernames(req, res) {
-  const usernames = await db.getAllUsernames();
+  const search = typeof req.query.search === "string" ? req.query.search : "";
+  const usernames = await db.getAllUsernames(search);
   console.log("Usernames: ", usernames);
   res.send("Usernames: " + usernames.map((user) => user.username).join(", "));
 }
@@ -30,8 +31,14 @@ async function createUsernamePost(req, res) {
   res.redirect("/");
 }
 
+async function deleteUsernames(req, res) {
+  await db.deleteAllUsernames();
+  res.redirect("/");
+}
+
 module.exports = {
   getUsernames,
   createUsernameGet,
-  createUsernamePost
+  createUsernamePost,
+  deleteUsernames
 };
