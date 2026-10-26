@@ -10,6 +10,7 @@
     "seed": "node dist/db/populatedb.js"
   },
   "dependencies": {
+    "dotenv": "^18.0.9",
     "express": "^5.1.0",
     "pg": "^8.16.3"
   },

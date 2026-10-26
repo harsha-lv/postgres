@@ -1,5 +1,7 @@
 #! /usr/bin/env node
 
+import "dotenv/config";
+import { Client } from "pg";
 import pool from "./pool";
 
 const SQL = `
@@ -16,13 +18,25 @@ VALUES
 `;
 
 async function main(): Promise<void> {
+  const connectionUrl = process.argv[2];
   console.log("Seeding database...");
 
-  try {
-    await pool.query(SQL);
-    console.log("Database seeded.");
-  } finally {
-    await pool.end();
+  if (connectionUrl) {
+    const client = new Client({ connectionString: connectionUrl });
+    try {
+      await client.connect();
+      await client.query(SQL);
+      console.log("Database seeded.");
+    } finally {
+      await client.end();
+    }
+  } else {
+    try {
+      await pool.query(SQL);
+      console.log("Database seeded.");
+    } finally {
+      await pool.end();
+    }
   }
 }
 
